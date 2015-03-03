@@ -1,6 +1,6 @@
 'use strict';
 var should = require('should');
-var Forte = require('../index');
+var Forte = require('../../index');
 var forte;
 
 describe('API', function () {
@@ -9,18 +9,6 @@ describe('API', function () {
         forte.setDevmode();
         forte.setAuthHeader('asdf');
         forte.setBasicAuth('username', 'password');
-    });
-    
-    it.only('supports multiple instances', function () {
-        var a = new Forte();
-        a.setBasicAuth('user_a', 'pass_b');
-        var b = new Forte();
-        b.setBasicAuth('user_b', 'pass_b');
-        b.setDevmode();
-        b._basicAuth.should.not.equal(a._basicAuth);
-        a._basicAuth.username.should.equal('user_a');
-        b._basicAuth.username.should.equal('user_b');
-        b._base.should.not.equal(a._base);
     });
     
     it('has expected properties and methods', function () {
@@ -33,6 +21,18 @@ describe('API', function () {
         forte._authHeader.should.be.type('string');
     });
     
+    it('supports multiple instances', function () {
+        var a = new Forte();
+        a.setBasicAuth('user_a', 'pass_b');
+        var b = new Forte();
+        b.setBasicAuth('user_b', 'pass_b');
+        b.setDevmode();
+        b._basicAuth.should.not.equal(a._basicAuth);
+        a._basicAuth.username.should.equal('user_a');
+        b._basicAuth.username.should.equal('user_b');
+        b._base.should.not.equal(a._base);
+    });
+    
     it('supports chaining', function () {
         var f = new Forte()
                 .setDevmode()
@@ -40,7 +40,7 @@ describe('API', function () {
                 .setBasicAuth('usr', 'pwd');
         f._base.should.equal('https://sandbox.forte.net/api/v1');
         f._authHeader.should.equal('hh');
-        f._basicAuth.should.equal({
+        f._basicAuth.should.eql({
             username: 'usr',
             password: 'pwd'
         });
@@ -62,15 +62,4 @@ describe('API', function () {
         });
     });
     
-    describe('ping', function () {
-        it('executes without errors', function (done) {
-            forte.ping(function (err, body) {
-                should.not.exist(err);
-                console.log(body);
-                should.exist(body);
-                body.should.be.type('object');
-                done();
-            });
-        });
-    });
 });

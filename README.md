@@ -32,5 +32,7 @@ forte.ping(function (err, body) {
 # Testing
 
 ```bash
-npm test
+npm run unit
+npm run functional
+npm test # everything
 ```
