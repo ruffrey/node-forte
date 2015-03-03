@@ -2,13 +2,14 @@
 var should = require('should');
 var Forte = require('../../index');
 var forte;
+var credentials = require('../credentials.json');
 
-describe('functional', function () {
+describe('Functional', function () {
     beforeEach(function () {
         forte = new Forte();
         forte.setDevmode();
-        forte.setAuthHeader('asdf');
-        forte.setBasicAuth('username', 'password');
+        forte.setBasicAuth(credentials.username, credentials.password);
+        forte.setAuthHeader('act_200000');
     });
     
     describe('ping', function () {

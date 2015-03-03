@@ -3,7 +3,7 @@ var should = require('should');
 var Forte = require('../../index');
 var forte;
 
-describe('API', function () {
+describe('Unit', function () {
     beforeEach(function () {
         forte = new Forte();
         forte.setDevmode();
@@ -12,7 +12,7 @@ describe('API', function () {
     });
     
     it('has expected properties and methods', function () {
-        forte.request.should.be.type('function');
+        forte._request.should.be.type('function');
         forte.ping.should.be.type('function');
         forte.setDevmode.should.be.type('function');
         forte.setAuthHeader.should.be.type('function');
