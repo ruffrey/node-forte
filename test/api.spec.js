@@ -16,9 +16,11 @@ describe('API', function () {
         a.setBasicAuth('user_a', 'pass_b');
         var b = new Forte();
         b.setBasicAuth('user_b', 'pass_b');
+        b.setDevmode();
         b._basicAuth.should.not.equal(a._basicAuth);
         a._basicAuth.username.should.equal('user_a');
         b._basicAuth.username.should.equal('user_b');
+        b._base.should.not.equal(a._base);
     });
     
     it('has expected properties and methods', function () {
