@@ -1,0 +1,20 @@
+{
+    "excludeFiles": [
+        "node_modules/**/*",
+        "public/shared/jquery.min.js",
+        "public/shared/jquery-ui-custom.min.js",
+        "public/shared/angular.min.js",
+        "public/shared/angular-ui-bootstrap.min.js",
+        "sites/db-monitor/node_modules/**/*",
+        "sites/monitoring.psychscribbles.com/jenkins-clean-theme-master/**/*",
+        "public/components/calendar/fullcalendar.js",
+        "public/components/calendar/angular-ui-calendar.js",
+        "public/shared/angular-datetimepicker.js"
+    ],
+    "validateIndentation": 4,
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpacesInAnonymousFunctionExpression": {
+        "beforeOpeningRoundBrace": true,
+        "beforeOpeningCurlyBrace": true
+    }
+}

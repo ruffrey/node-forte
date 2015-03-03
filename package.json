@@ -1,0 +1,24 @@
+{
+  "name": "node-forte",
+  "version": "0.1.0",
+  "description": "Community Node.js API wrapper for Forte Web Services",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "keywords": [
+    "forte",
+    "payments",
+    "ach",
+    "echeck"
+  ],
+  "author": "Jeff Parrish <jeffhparrish@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.1.0",
+    "should": "^5.0.1"
+  },
+  "dependencies": {
+    "request": "^2.53.0"
+  }
+}
