@@ -86,7 +86,12 @@
 
     "maxerr"        : 100,      // Maximum errors before stopping.
     "predef"        : [
-        "angular"
+        "angular",
+        "describe",
+        "xdescribe",
+        "beforeEach",
+        "it",
+        "xit"
     ],
     "indent"        : 4         // Specify indentation spacing
 }
