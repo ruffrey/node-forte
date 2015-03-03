@@ -4,7 +4,7 @@ Pull requests welcome. Please write tests.
 
 Ensure the PR conforms to the `.jscsrc` and `.jshintrc`.
 
-# Basic usage
+# Usage
 
 ```bash
 npm install forte --save
