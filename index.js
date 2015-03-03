@@ -1,27 +1,30 @@
 'use strict';
 var request = require('request');
 
-var Forte = function () { };
-module.exports = Forte;
-
-Forte.prototype._base = "";
-Forte.prototype._authHeader = "";
-Forte.prototype._basicAuth = {
-    username: '',
-    password: ''
+var Forte = function () {
+    this._base = "";
+    this._authHeader = "";
+    this._basicAuth = {
+        username: '',
+        password: ''
+    };
+    return this;
 };
 
 Forte.prototype.setDevmode = function () {
     this._base = 'https://sandbox.forte.net/api/v1';
+    return this;
 };
 
 Forte.prototype.setAuthHeader = function (token) {
     this._authHeader = token;
+    return this;
 };
 
 Forte.prototype.setBasicAuth = function (username, password) {
     this._basicAuth.username = username;
     this._basicAuth.password = password;
+    return this;
 };
 
 Forte.prototype.request = function (opts, callback) {
@@ -50,3 +53,6 @@ Forte.prototype.ping = function (callback) {
         method: 'GET'
     }, callback);
 };
+
+
+module.exports = Forte;

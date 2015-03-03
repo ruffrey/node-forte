@@ -1,7 +1,7 @@
 'use strict';
 var should = require('should');
 var Forte = require('../index');
-var forte
+var forte;
 
 describe('API', function () {
     beforeEach(function () {
@@ -9,6 +9,16 @@ describe('API', function () {
         forte.setDevmode();
         forte.setAuthHeader('asdf');
         forte.setBasicAuth('username', 'password');
+    });
+    
+    it.only('supports multiple instances', function () {
+        var a = new Forte();
+        a.setBasicAuth('user_a', 'pass_b');
+        var b = new Forte();
+        b.setBasicAuth('user_b', 'pass_b');
+        b._basicAuth.should.not.equal(a._basicAuth);
+        a._basicAuth.username.should.equal('user_a');
+        b._basicAuth.username.should.equal('user_b');
     });
     
     it('has expected properties and methods', function () {
@@ -19,6 +29,19 @@ describe('API', function () {
         forte.setBasicAuth.should.be.type('function');
         forte._base.should.be.type('string');
         forte._authHeader.should.be.type('string');
+    });
+    
+    it('supports chaining', function () {
+        var f = new Forte()
+                .setDevmode()
+                .setAuthHeader('hh')
+                .setBasicAuth('usr', 'pwd');
+        f._base.should.equal('https://sandbox.forte.net/api/v1');
+        f._authHeader.should.equal('hh');
+        f._basicAuth.should.equal({
+            username: 'usr',
+            password: 'pwd'
+        });
     });
     
     describe('setAuthHeader', function () {
