@@ -36,3 +36,11 @@ npm run unit
 npm run functional
 npm test # everything
 ```
+
+#@ Debugging
+
+Run with `DEBUG=forte*` environment variable.
+
+```bash
+DEBUG=forte* npm test
+```
