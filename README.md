@@ -6,10 +6,6 @@ Ensure the PR conforms to the `.jscsrc` and `.jshintrc`.
 
 # Usage
 
-```bash
-npm install forte --save
-```
-
 
 ```javascript
 var Forte = require('forte');
