@@ -35,7 +35,7 @@ npm run functional
 npm test # everything
 ```
 
-#@ Debugging
+## Debugging
 
 Run with `DEBUG=forte*` environment variable.
 
