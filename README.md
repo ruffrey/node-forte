@@ -1,3 +1,5 @@
+# pre-release - pre-alpha - untested
+---
 # Forte community library for Node.js
 
 Pull requests welcome. Please write tests.
