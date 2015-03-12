@@ -1,6 +1,7 @@
 {
     "excludeFiles": [
-        "node_modules/**/*"
+        "node_modules/**/*",
+        "**/*.json"
     ],
     "validateIndentation": 4,
     "requireSpaceBeforeBlockStatements": true,

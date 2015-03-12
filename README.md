@@ -4,7 +4,12 @@
 
 Pull requests welcome. Please write tests.
 
-Ensure the PR conforms to the `.jscsrc` and `.jshintrc`.
+Ensure the PR conforms to the JSCS and JSHint standards.
+
+```bash
+npm run jscs
+npm run jshint
+```
 
 # Usage
 

@@ -1,0 +1,19 @@
+'use strict';
+exports.reporter = function (errors, files) {
+    if (!errors.length) {
+        console.log('JSHint completed without errors.', files.length, 'files.');
+        console.log(files.map(function (f) {
+            return '  ' + f.file;
+        }).join('\n'));
+        return;
+    }
+
+    var str = '';
+    errors.forEach(function (r) {
+        var file = r.file;
+        var err = r.error;
+
+        str += file + ": line " + err.line + ", col " + err.character + ", " + err.reason + "\n";
+    });
+    console.log(str);
+};

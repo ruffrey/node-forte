@@ -6,7 +6,9 @@
   "scripts": {
     "test": "mocha test/**/*",
     "unit": "mocha test/unit",
-    "functional": "mocha test/functional"
+    "functional": "mocha test/functional",
+    "jscs": "jscs **/*",
+    "jshint": "jshint index.js test/**/*.js --reporter=.jshintreporter"
   },
   "keywords": [
     "forte",
@@ -17,6 +19,8 @@
   "author": "Jeff Parrish <jeffhparrish@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "jscs": "^1.11.3",
+    "jshint": "^2.6.3",
     "mocha": "^2.1.0",
     "should": "^5.0.1"
   },
