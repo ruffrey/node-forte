@@ -2,132 +2,133 @@
 var request = require('request');
 var debug = require('debug')('forte');
 
-var Forte = function () {
-    this._base = "";
-    this._authHeader = "";
-    this._basicAuth = {
+var Forte = function ForteClass() {
+    
+    var self = this;
+    
+    // TODO: once ready for production, add the base url endpoint here.
+    self._base = "";
+    self._authHeader = "";
+    self._basicAuth = {
         username: '',
         password: ''
     };
-    return this;
-};
-
-Forte.prototype.setDevmode = function setDevmode() {
-    this._base = 'https://sandbox.forte.net/api/v1';
-    return this;
-};
-
-Forte.prototype.setAuthHeader = function setAuthHeader(token) {
-    this._authHeader = token;
-    return this;
-};
-
-Forte.prototype.setBasicAuth = function setBasicAuth(username, password) {
-    this._basicAuth.username = username;
-    // this._basicAuth.username = new Buffer(username).toString('base64');
-    this._basicAuth.password = password;
-    // this._basicAuth.password = new Buffer(password).toString('base64');
-    return this;
-};
-
-Forte.prototype._request = function _request(opts, callback) {
-    opts = opts || { };
-    if (opts.json === undefined) opts.json = true;
-    if (!opts.body) opts.body = { };
-    opts.uri = this._base + opts.uri;
     
-    opts.headers = {
-        'X-Forte-Auth-Account-Id': opts.body.account_id || this._authHeader
+    self.setDevmode = function setDevmode() {
+        self._base = 'https://sandbox.forte.net/api/v1';
+        return self;
     };
     
-    opts.auth = this._basicAuth;
+    self.setAuthHeader = function setAuthHeader(token) {
+        self._authHeader = token;
+        return self;
+    };
     
-    debug('request', opts);
-    request(opts, function onAfterRequest(err, res, body) {
-        debug('response', err || body);
-        if (err || res.statusCode !== 200) {
-            return callback(err || body || "Error: status=" + res.statusCode);
+    self.setBasicAuth = function setBasicAuth(username, password) {
+        self._basicAuth.username = username;
+        self._basicAuth.password = password;
+        return self;
+    };
+
+    self._request = function _request(opts, callback) {
+        opts = opts || { };
+        if (opts.json === undefined) opts.json = true;
+        if (!opts.body) opts.body = { };
+        opts.uri = self._base + opts.uri;
+        
+        opts.headers = {
+            'X-Forte-Auth-Account-Id': opts.body.account_id || self._authHeader
+        };
+        
+        opts.auth = self._basicAuth;
+        
+        debug('request', opts);
+        request(opts, function onAfterRequest(err, res, body) {
+            debug('response', res.statusCode, err || body);
+            if (err || (res.statusCode < 200 && res.statusCode > 299)) {
+                return callback(err || body || "Error: status=" + res.statusCode);
+            }
+            callback(null, body);
+        });
+    };
+    
+    
+    self.customers = {
+        find: function find(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/locations/' +
+                params.location_id + '/customers/' +
+                (params.customer_token || '');
+            
+            self._request({
+                uri: uri,
+                method: 'GET',
+                body: params
+            }, callback);
+        },
+        create: function create(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/customers';
+            self._request({
+                uri: uri,
+                method: 'POST',
+                body: params
+            }, callback);
+        },
+        update: function update(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/locations/' +
+                params.location_id + '/customers/' + 
+                params.customer_token;
+            self._request({
+                uri: uri,
+                method: 'PUT',
+                body: params
+            }, callback);
+        },
+        remove: function remove(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/locations/' +
+                params.location_id + '/customers/' + 
+                params.customer_token;
+            self._request({
+                uri: uri,
+                method: 'DELETE'
+            }, callback);
         }
-        callback(null, body);
-    });
+    };
+
+
+    self.transactions = {
+        find: function find(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/locations/' +
+                params.location_id + '/transactions/' + 
+                params.transaction_id;
+            self._request({
+                uri: uri,
+                method: 'GET',
+                body: params
+            }, callback);
+        },
+        create: function create(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/transactions';
+            self._request({
+                uri: uri,
+                method: 'POST',
+                body: params
+            }, callback);
+        },
+        update: function update(params, callback) {
+            var uri = '/accounts/' + params.account_id + '/locations/' +
+                params.location_id + '/transactions/' + 
+                params.transaction_id;
+            self._request({
+                uri: uri,
+                method: 'PUT',
+                body: params
+            }, callback);
+        }
+    };
+    
+    
+    return self;
 };
 
-Forte.prototype.ping = function ping(callback) {
-    this._request({
-        uri: '/',
-        method: 'GET'
-    }, callback);
-};
-
-Forte.prototype.customers = {
-    find: function find(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/locations/' +
-            params.location_id + '/customers/' + 
-            params.customer_id;
-        this.request({
-            uri: uri,
-            method: 'GET',
-            body: params
-        }, callback);
-    },
-    create: function create(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/customers';
-        this.request({
-            uri: uri,
-            method: 'POST',
-            body: params
-        }, callback);
-    },
-    update: function update(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/locations/' +
-            params.location_id + '/customers/' + 
-            params.customer_id;
-        this.request({
-            uri: uri,
-            method: 'PUT',
-            body: params
-        }, callback);
-    },
-    remove: function remove(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/locations/' +
-            params.location_id + '/customers/' + 
-            params.customer_id;
-        this.request({
-            uri: uri,
-            method: 'DELETE'
-        }, callback);
-    }
-};
-
-Forte.prototype.transactions = {
-    find: function find(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/locations/' +
-            params.location_id + '/transactions/' + 
-            params.transaction_id;
-        this.request({
-            uri: uri,
-            method: 'GET',
-            body: params
-        }, callback);
-    },
-    create: function create(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/transactions';
-        this.request({
-            uri: uri,
-            method: 'POST',
-            body: params
-        }, callback);
-    },
-    update: function update(params, callback) {
-        var uri = '/accounts/' + params.account_id + '/locations/' +
-            params.location_id + '/transactions/' + 
-            params.transaction_id;
-        this.request({
-            uri: uri,
-            method: 'PUT',
-            body: params
-        }, callback);
-    }
-};
 
 module.exports = Forte;

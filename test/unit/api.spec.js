@@ -13,7 +13,6 @@ describe('Unit', function () {
     
     it('has expected properties and methods', function () {
         forte._request.should.be.type('function');
-        forte.ping.should.be.type('function');
         forte.setDevmode.should.be.type('function');
         forte.setAuthHeader.should.be.type('function');
         forte.setBasicAuth.should.be.type('function');
