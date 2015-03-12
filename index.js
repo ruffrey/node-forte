@@ -58,7 +58,6 @@ var Forte = function ForteClass() {
             var uri = '/accounts/' + params.account_id + '/locations/' +
                 params.location_id + '/customers/' +
                 (params.customer_token || '');
-            
             self._request({
                 uri: uri,
                 method: 'GET',

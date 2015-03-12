@@ -68,5 +68,21 @@ describe('Functional', function () {
                 done();
             });
         });
+        it.only('updates the customer', function (done) {
+            forte.customers.update({
+                account_id: credentials.accountId,
+                location_id: credentials.locationId,
+                customer_token: customerToken,
+                first_name: 'Dude',
+                company_name: 'Dude Associates'
+            }, function (err, body) {
+                should.not.exist(err);
+                body.should.be.an.Object.and.not.an.Array;
+                body.customer_token.should.equal(customerToken);
+                body.first_name.should.equal('Dude');
+                body.company_name.should.equal('Dude Associates');
+                done();
+            });
+        });
     });
 });
