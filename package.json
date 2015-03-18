@@ -19,6 +19,7 @@
   "author": "Jeff Parrish <jeffhparrish@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "async": "^0.9.0",
     "jscs": "^1.11.3",
     "jshint": "^2.6.3",
     "mocha": "^2.1.0",

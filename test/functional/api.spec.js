@@ -1,5 +1,6 @@
 'use strict';
 var should = require('should');
+var async = require('async');
 var Forte = require('../../index');
 var forte;
 var credentials = require('../credentials.json');
@@ -99,10 +100,10 @@ describe('Functional', function () {
         });
 
         describe('credit card pay method', function () {
-            it('creates the paymethod on a customer', function (done) {
+            it('is created without a customer and returns a token', function (done) {
                 forte.paymethods.create({
                    "label": "Visa - 1234",
-                   "notes": "Brown Work CC",
+                   "notes": "Brown",
                    "card": {
                       "account_number": "4242424242424242",
                       "expire_month": 12,
@@ -114,27 +115,61 @@ describe('Functional', function () {
                   }
                 }, function (err, body) {
                     should.not.exist(err);
+                    body.notes.should.equal('Brown');
+                    should.exist(body.paymethod_token);
+                    body.paymethod_token.should.be.type('string');
                     done();
                 });
             });
         });
 
-        describe('credit card pay method', function () {
-            it('creates the paymethod on a customer', function (done) {
-                forte.paymethods.create({
-                   "label": "Brown Work- 1111",
-                   "notes": "Brown Work Checking",
-                   "echeck": {
-                      "account_holder": "Jennifer McFly",
-                      "account_number": "1111111111111",
-                      "routing_number": "021000021",
-                      "check_number": "1001",
-                      "account_type": "checking"
-                   }
-                }, function (err, body) {
-                    should.not.exist(err);
-                    done();
-                });
+        describe('echeck paymethod', function () {
+
+            it('is created, updated, and deleted on a customer', function (done) {
+                var token;
+                async.series([
+                    function (cb) {
+                        forte.paymethods.create({
+                            customer_token: customerToken,
+                           "label": "Brown",
+                           "notes": "Brown Work Checking",
+                           "echeck": {
+                              "account_holder": "Jennifer McFly",
+                              "account_number": "1111111111111",
+                              "routing_number": "021000021",
+                              "check_number": "1001",
+                              "account_type": "checking"
+                           }
+                        }, function (err, body) {
+                            should.not.exist(err);
+                            should.exist(body.paymethod_token);
+                            body.label.should.equal('Brown');
+                            should.exist(body.customer_token);
+                            body.customer_token.should.equal(customerToken);
+                            token = body.paymethod_token;
+                            cb();
+                        });
+                    },
+                    function (cb) {
+                        forte.paymethods.update({
+                            paymethod_token: token,
+                            label: "Brummel"
+                        }, function (err, body) {
+                            should.not.exist(err);
+                            body.label.should.equal('Brummel');
+                            cb();
+                        });
+                    },
+                    function (cb) {
+                        forte.paymethods.remove({
+                            paymethod_token: token
+                        }, function (err, body) {
+                            should.not.exist(err);
+                            cb();
+                        });
+                    }
+                ], done);
+
             });
         });
     });
