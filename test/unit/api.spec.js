@@ -10,7 +10,7 @@ describe('Unit', function () {
         forte.setAuthHeader('asdf');
         forte.setBasicAuth('username', 'password');
     });
-    
+
     it('has expected properties and methods', function () {
         forte._request.should.be.type('function');
         forte.setDevmode.should.be.type('function');
@@ -19,7 +19,7 @@ describe('Unit', function () {
         forte._base.should.be.type('string');
         forte._authHeader.should.be.type('string');
     });
-    
+
     it('supports multiple instances', function () {
         var a = new Forte();
         a.setBasicAuth('user_a', 'pass_b');
@@ -31,7 +31,7 @@ describe('Unit', function () {
         b._basicAuth.username.should.equal('user_b');
         b._base.should.not.equal(a._base);
     });
-    
+
     it('supports chaining', function () {
         var f = new Forte()
                 .setDevmode()
@@ -44,14 +44,14 @@ describe('Unit', function () {
             password: 'pwd'
         });
     });
-    
+
     describe('setAuthHeader', function () {
         it('should work', function () {
             forte.setAuthHeader('asdfjkl');
             forte._authHeader.should.equal('asdfjkl');
         });
     });
-    
+
     describe('setBasicAuth', function () {
         it('should work', function () {
             forte.setBasicAuth('username', 'password');
@@ -60,5 +60,5 @@ describe('Unit', function () {
             forte._basicAuth.password.should.equal('password');
         });
     });
-    
+
 });
