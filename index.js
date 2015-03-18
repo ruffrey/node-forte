@@ -2,31 +2,23 @@
 var request = require('request');
 var debug = require('debug')('forte');
 
-var Forte = function ForteClass() {
+var Forte = function ForteClass(defaults) {
+    defaults = defaults || {};
 
     var self = this;
 
     // TODO: once ready for production, add the base url endpoint here.
     self._base = "";
-    self._authHeader = "";
-    self._basicAuth = {
-        username: '',
-        password: ''
+    self.account_id = defaults.account_id || "";
+    self.basicAuth = {
+        username: defaults.apiLoginId || '',
+        password: defaults.secureTransactionKey || ''
     };
+
+    self.location_id = defaults.location_id || '';
 
     self.setDevmode = function setDevmode() {
         self._base = 'https://sandbox.forte.net/api/v1';
-        return self;
-    };
-
-    self.setAuthHeader = function setAuthHeader(token) {
-        self._authHeader = token;
-        return self;
-    };
-
-    self.setBasicAuth = function setBasicAuth(username, password) {
-        self._basicAuth.username = username;
-        self._basicAuth.password = password;
         return self;
     };
 
@@ -37,15 +29,18 @@ var Forte = function ForteClass() {
         opts.uri = self._base + opts.uri;
 
         opts.headers = {
-            'X-Forte-Auth-Account-Id': opts.body.account_id || self._authHeader
+            'X-Forte-Auth-Account-Id': opts.body.account_id || self.account_id
         };
 
-        opts.auth = self._basicAuth;
+        opts.auth = self.basicAuth;
+
+        if (!opts.body.account_id) opts.body.account_id = self.account_id;
+        if (!opts.body.location_id) opts.body.location_id = self.location_id;
 
         debug('request', opts);
         request(opts, function onAfterRequest(err, res, body) {
             debug('response', res.statusCode, err || body);
-            if (err || (res.statusCode < 200 && res.statusCode > 299)) {
+            if (err || res.statusCode < 200 || res.statusCode > 299) {
                 return callback(err || body || "Error: status=" + res.statusCode);
             }
             callback(null, body);
@@ -55,9 +50,9 @@ var Forte = function ForteClass() {
 
     self.customers = {
         find: function find(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/locations/' +
-                params.location_id + '/customers/' +
-                (params.customer_token || '');
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + (params.customer_token || '');
             self._request({
                 uri: uri,
                 method: 'GET',
@@ -65,7 +60,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         create: function create(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/customers';
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/customers';
             self._request({
                 uri: uri,
                 method: 'POST',
@@ -73,9 +69,9 @@ var Forte = function ForteClass() {
             }, callback);
         },
         update: function update(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/locations/' +
-                params.location_id + '/customers/' +
-                params.customer_token;
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + params.customer_token;
             self._request({
                 uri: uri,
                 method: 'PUT',
@@ -83,9 +79,9 @@ var Forte = function ForteClass() {
             }, callback);
         },
         remove: function remove(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/locations/' +
-                params.location_id + '/customers/' +
-                params.customer_token;
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + params.customer_token;
             self._request({
                 uri: uri,
                 method: 'DELETE'
@@ -96,9 +92,9 @@ var Forte = function ForteClass() {
 
     self.transactions = {
         find: function find(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/locations/' +
-                params.location_id + '/transactions/' +
-                params.transaction_id;
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/transactions/' + params.transaction_id;
             self._request({
                 uri: uri,
                 method: 'GET',
@@ -106,7 +102,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         create: function create(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/transactions';
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/transactions';
             self._request({
                 uri: uri,
                 method: 'POST',
@@ -114,9 +111,9 @@ var Forte = function ForteClass() {
             }, callback);
         },
         update: function update(params, callback) {
-            var uri = '/accounts/' + params.account_id + '/locations/' +
-                params.location_id + '/transactions/' +
-                params.transaction_id;
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/transactions/' + params.transaction_id;
             self._request({
                 uri: uri,
                 method: 'PUT',
@@ -127,8 +124,9 @@ var Forte = function ForteClass() {
 
     self.paymethods = {
         findByLocation: function findByLocation(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id + '/paymethods';
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/paymethods';
             self._request({
                 uri: uri,
                 method: 'GET',
@@ -136,8 +134,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         findByCustomer: function findByCustomer(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id +
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
                 '/customers/' + params.customer_id + '/paymethods';
             self._request({
                 uri: uri,
@@ -146,8 +144,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         findById: function findById(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id +
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
                 '/paymethods/' + params.paymethod_token;
             self._request({
                 uri: uri,
@@ -156,8 +154,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         create: function create(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id +
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
                 '/paymethods';
             self._request({
                 uri: uri,
@@ -166,8 +164,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         update: function update(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id +
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
                 '/paymethods/' + params.paymethod_token;
             self._request({
                 uri: uri,
@@ -176,8 +174,8 @@ var Forte = function ForteClass() {
             }, callback);
         },
         remove: function remove(params, callback) {
-            var uri = '/accounts/' + params.account_id +
-                '/locations/' + params.location_id +
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
                 '/paymethods/' + params.paymethod_token;
             self._request({
                 uri: uri,

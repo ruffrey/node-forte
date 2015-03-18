@@ -8,10 +8,8 @@ describe('Functional', function () {
     this.timeout(5000);
 
     beforeEach(function () {
-        forte = new Forte();
+        forte = new Forte(credentials);
         forte.setDevmode();
-        forte.setBasicAuth(credentials.apiLoginId, credentials.secureTransactionKey);
-        forte.setAuthHeader(credentials.accountId);
     });
 
     describe('customers', function () {
@@ -19,9 +17,6 @@ describe('Functional', function () {
 
         beforeEach(function (done) {
             forte.customers.create({
-                account_id: credentials.accountId,
-                location_id: credentials.locationId,
-
                 first_name: "Emmett",
                 last_name: "Brown",
                 company_name: "Brown Associates"
@@ -36,8 +31,6 @@ describe('Functional', function () {
         });
         afterEach(function (done) {
             forte.customers.remove({
-                account_id: credentials.accountId,
-                location_id: credentials.locationId,
                 customer_token: customerToken
             }, function (err, body) {
                 should.not.exist(err);
@@ -46,10 +39,7 @@ describe('Functional', function () {
         });
 
         it('lists all customers', function (done) {
-            forte.customers.find({
-                account_id: credentials.accountId,
-                location_id: credentials.locationId
-            }, function (err, body) {
+            forte.customers.find({}, function (err, body) {
                 should.not.exist(err);
                 body.should.be.an.Object;
                 body.results.should.be.an.Array;
@@ -58,8 +48,6 @@ describe('Functional', function () {
         });
         it('gets one customer', function (done) {
             forte.customers.find({
-                account_id: credentials.accountId,
-                location_id: credentials.locationId,
                 customer_token: customerToken
             }, function (err, body) {
                 should.not.exist(err);
@@ -70,8 +58,6 @@ describe('Functional', function () {
         });
         it('updates the customer details', function (done) {
             forte.customers.update({
-                account_id: credentials.accountId,
-                location_id: credentials.locationId,
                 customer_token: customerToken,
                 first_name: 'Dude',
                 company_name: 'Dude Associates'
@@ -87,6 +73,69 @@ describe('Functional', function () {
     });
 
     describe('payment methods', function () {
-        
+
+        var customerToken = null;
+
+        beforeEach(function (done) {
+            forte.customers.create({
+                first_name: "Emmett",
+                last_name: "Brown",
+                company_name: "Brown Associates"
+            }, function (err, body) {
+                should.not.exist(err);
+                body.should.be.a.Object;
+                body.customer_token.should.be.a.String.and.be.ok;
+                customerToken = body.customer_token;
+                done();
+            });
+        });
+        afterEach(function (done) {
+            forte.customers.remove({
+                customer_token: customerToken
+            }, function (err, body) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        describe('credit card pay method', function () {
+            it('creates the paymethod on a customer', function (done) {
+                forte.paymethods.create({
+                   "label": "Visa - 1234",
+                   "notes": "Brown Work CC",
+                   "card": {
+                      "account_number": "4242424242424242",
+                      "expire_month": 12,
+                      "expire_year": 2015,
+                      "card_verification_value": "123",
+                      "card_type": "visa",
+                      "name_on_card": "Dr. Emmett Brown",
+                      "partial_auth_allowed": "balance"
+                  }
+                }, function (err, body) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+        });
+
+        describe('credit card pay method', function () {
+            it('creates the paymethod on a customer', function (done) {
+                forte.paymethods.create({
+                   "label": "Brown Work- 1111",
+                   "notes": "Brown Work Checking",
+                   "echeck": {
+                      "account_holder": "Jennifer McFly",
+                      "account_number": "1111111111111",
+                      "routing_number": "021000021",
+                      "check_number": "1001",
+                      "account_type": "checking"
+                   }
+                }, function (err, body) {
+                    should.not.exist(err);
+                    done();
+                });
+            });
+        });
     });
 });

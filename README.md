@@ -2,6 +2,10 @@
 ---
 # Forte community library for Node.js
 
+See the
+[Forte Web Service docs](https://www.forte.net/devdocs/api_resources/forte_api.htm)
+for help.
+
 Pull requests welcome. Please write tests.
 
 Ensure the PR conforms to the JSCS and JSHint standards.
@@ -13,12 +17,16 @@ npm run jshint
 
 # Usage
 
-
 ```javascript
 var Forte = require('forte');
+
 var forte = new Forte()
             .setAuthHeader('setAuthHeader')
             .setBasicAuth('username', 'password');
+
+// or
+var credentials = require('./test/credentials.example.json');
+var forte = new Forte(credentials);
 
 forte.setDevmode(); // to use the sandbox endpoint
 
