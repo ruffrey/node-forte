@@ -19,24 +19,10 @@ npm run jshint
 
 ```javascript
 var Forte = require('forte');
-
-var forte = new Forte()
-            .setAuthHeader('setAuthHeader')
-            .setBasicAuth('username', 'password');
-
-// or
 var credentials = require('./test/credentials.example.json');
 var forte = new Forte(credentials);
 
 forte.setDevmode(); // to use the sandbox endpoint
-
-forte.ping(function (err, body) {
-    if (err) {
-        console.error(err);
-    } else {
-        console.log(body);
-    }
-});
 
 ```
 
