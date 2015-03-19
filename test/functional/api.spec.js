@@ -173,4 +173,89 @@ describe('Functional', function () {
             });
         });
     });
+
+    describe.only('transactions', function () {
+        var customerToken = null;
+
+        beforeEach(function (done) {
+            forte.customers.create({
+                first_name: "Emmett",
+                last_name: "Brown",
+                company_name: "Brown Associates"
+            }, function (err, body) {
+                should.not.exist(err);
+                body.should.be.a.Object;
+                body.customer_token.should.be.a.String.and.be.ok;
+                customerToken = body.customer_token;
+                done();
+            });
+        });
+        afterEach(function (done) {
+            forte.customers.remove({
+                customer_token: customerToken
+            }, function (err, body) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        it('is created ad hoc with no customer', function (done) {
+            forte.transactions.create({
+               "action":"sale",
+               "authorization_amount": 39.00,
+               "billing_address":{
+                  "first_name": "Emmett",
+                  "last_name": "Brown"
+               },
+               "paymethod":{
+                  "echeck":{
+                     "account_number": "1111111111111",
+                     "routing_number": "021000021"
+                     }
+                }
+            }, function (err, body) {
+                should.not.exist(err);
+                done();
+            });
+        });
+
+        it('throws error when customer is supplied with echeck but no address', function (done) {
+            forte.transactions.create({
+                customer_token: customerToken,
+               "action":"sale",
+               "authorization_amount": 100.00,
+               "paymethod":{
+                  "echeck":{
+                     "account_number": "1111111111111",
+                     "routing_number": "021000021"
+                  }
+                }
+            }, function (err, body) {
+                should.exist(err);
+                done();
+            });
+        });
+
+        it('is created when customer is supplied with echeck and address', function (done) {
+            forte.transactions.create({
+                customer_token: customerToken,
+               "action":"sale",
+               "authorization_amount": 14.00,
+               "billing_address":{
+                  "first_name": "Emmett",
+                  "last_name": "Brown"
+               },
+               "paymethod":{
+                  "echeck":{
+                     "account_number": "1111111111111",
+                     "routing_number": "021000021"
+                  }
+                }
+            }, function (err, body) {
+                should.exist(err);
+                done();
+            });
+        });
+
+    });
 });
