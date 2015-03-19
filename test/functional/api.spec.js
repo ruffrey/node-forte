@@ -204,7 +204,7 @@ describe('Functional', function () {
                            "account_holder": "Emmet Brown",
                            "account_number": "1111111111111",
                            "routing_number": "021000021",
-                           "account_type": "Checking" // or savings
+                           "account_type": "Checking" // or "Savings"
                         }
                     }, done);
                 });

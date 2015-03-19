@@ -26,6 +26,9 @@ forte.setDevmode(); // to use the sandbox endpoint
 
 ```
 
+See the tests in `./test/functional/` for common usage.
+
+
 # Testing
 
 ```bash
