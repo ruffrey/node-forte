@@ -174,7 +174,7 @@ describe('Functional', function () {
         });
     });
 
-    describe.only('transactions', function () {
+    describe('transactions', function () {
         var customerToken = null;
 
         beforeEach(function (done) {
@@ -187,7 +187,27 @@ describe('Functional', function () {
                 body.should.be.a.Object;
                 body.customer_token.should.be.a.String.and.be.ok;
                 customerToken = body.customer_token;
-                done();
+                // create a default billing address
+                forte.addresses.create({
+                    customer_token: customerToken,
+                    first_name: 'Emmet',
+                    last_name: 'Brown',
+                    address_type: 'both',
+                    phone: '8005553333',
+                    email: 'none@mailsac.com'
+                }, function (err, body) {
+                    should.not.exist(err);
+                    // create a default pay method
+                    forte.paymethods.create({
+                        customer_token: customerToken,
+                        "echeck":{
+                           "account_holder": "Emmet Brown",
+                           "account_number": "1111111111111",
+                           "routing_number": "021000021",
+                           "account_type": "Checking" // or savings
+                        }
+                    }, done);
+                });
             });
         });
         afterEach(function (done) {
@@ -211,7 +231,7 @@ describe('Functional', function () {
                   "echeck":{
                      "account_number": "1111111111111",
                      "routing_number": "021000021"
-                     }
+                  }
                 }
             }, function (err, body) {
                 should.not.exist(err);
@@ -219,7 +239,7 @@ describe('Functional', function () {
             });
         });
 
-        it('throws error when customer is supplied with echeck but no address', function (done) {
+        it('throws error when customer is supplied with echeck', function (done) {
             forte.transactions.create({
                 customer_token: customerToken,
                "action":"sale",
@@ -236,15 +256,11 @@ describe('Functional', function () {
             });
         });
 
-        it('is created when customer is supplied with echeck and address', function (done) {
+        it.only('is created when customer is supplied', function (done) {
             forte.transactions.create({
                 customer_token: customerToken,
                "action":"sale",
                "authorization_amount": 14.00,
-               "billing_address":{
-                  "first_name": "Emmett",
-                  "last_name": "Brown"
-               },
                "paymethod":{
                   "echeck":{
                      "account_number": "1111111111111",
@@ -252,8 +268,21 @@ describe('Functional', function () {
                   }
                 }
             }, function (err, body) {
-                should.exist(err);
+                should.not.exist(err);
                 done();
+            });
+        });
+
+        describe('action methods using existing paymethod', function (done) {
+
+            var paymethod_token;
+
+            it('creates sale', function () {
+
+            });
+
+            it('creates disbursement', function () {
+
             });
         });
 

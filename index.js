@@ -89,6 +89,28 @@ var Forte = function ForteClass(defaults) {
         }
     };
 
+    self.addresses = {
+        create: function (params, callback) {
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/addresses';
+            self._request({
+                uri: uri,
+                method: 'POST',
+                body: params
+            }, callback);
+        },
+        update: function (params, callback) {
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/addresses/' + params.address_token;
+            self._request({
+                uri: uri,
+                method: 'PUT',
+                body: params
+            }, callback);
+        }
+    };
 
     self.transactions = {
         findById: function (params, callback) {
@@ -142,9 +164,6 @@ var Forte = function ForteClass(defaults) {
                 body: params
             }, callback);
         },
-
-        // Creation methods
-
         create: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/transactions';
@@ -156,6 +175,7 @@ var Forte = function ForteClass(defaults) {
         }
     };
 
+    // Transaction type specific actions
     self.actions = ['sale', 'disburse', 'authorize', 'verify', 'inquiry', 'force'];
     self.actions.forEach(function (a) {
         self.transactions[a] = function (params, callback) {
