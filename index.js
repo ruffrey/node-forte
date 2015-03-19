@@ -39,7 +39,7 @@ var Forte = function ForteClass(defaults) {
 
         debug('request', opts);
         request(opts, function onAfterRequest(err, res, body) {
-            debug('response', res.statusCode, err || body);
+            debug('response', res ? res.statusCode : res, err || body);
             if (err || res.statusCode < 200 || res.statusCode > 299) {
                 return callback(err || body || "Error: status=" + res.statusCode);
             }
@@ -204,7 +204,7 @@ var Forte = function ForteClass(defaults) {
         findByCustomer: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/locations/' + (params.location_id || self.location_id) +
-                '/customers/' + params.customer_id + '/paymethods';
+                '/customers/' + params.customer_token + '/paymethods';
             self._request({
                 uri: uri,
                 method: 'GET',
