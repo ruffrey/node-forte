@@ -90,6 +90,17 @@ var Forte = function ForteClass(defaults) {
     };
 
     self.addresses = {
+        findByCustomer: function (params, callback) {
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + (params.customer_token || '') +
+                '/addresses';
+            self._request({
+                uri: uri,
+                method: 'GET',
+                body: params
+            }, callback);
+        },
         create: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/locations/' + (params.location_id || self.location_id) +
@@ -100,13 +111,25 @@ var Forte = function ForteClass(defaults) {
                 body: params
             }, callback);
         },
+        // This does not seem to work as documented.
         update: function (params, callback) {
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + params.customer_token +
+                '/addresses/' + params.address_token;
+            self._request({
+                uri: uri,
+                method: 'PUT',
+                body: params
+            }, callback);
+        },
+        remove: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/locations/' + (params.location_id || self.location_id) +
                 '/addresses/' + params.address_token;
             self._request({
                 uri: uri,
-                method: 'PUT',
+                method: 'DELETE',
                 body: params
             }, callback);
         }
