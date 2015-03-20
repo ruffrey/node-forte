@@ -1,6 +1,6 @@
 {
   "name": "forte",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Community Node.js API wrapper for Forte Web Services",
   "main": "index.js",
   "scripts": {
