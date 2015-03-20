@@ -10,6 +10,7 @@
     "jscs": "jscs **/*",
     "jshint": "jshint index.js test/**/*.js --reporter=.jshintreporter"
   },
+  "repository": "https://github.com/ruffrey/node-forte",
   "keywords": [
     "forte",
     "payments",
