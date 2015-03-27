@@ -24,8 +24,15 @@ var Forte = function ForteClass(defaults) {
 
     self._request = function _request(opts, callback) {
         opts = opts || { };
+        if (!callback) debug('request without callback');
+        callback = callback || function () { };
+
         if (opts.json === undefined) opts.json = true;
         if (!opts.body) opts.body = { };
+        if (opts.body.qs) {
+            opts.qs = opts.body.qs;
+            delete opts.body.qs;
+        }
         opts.uri = self._base + opts.uri;
 
         opts.headers = {
@@ -38,7 +45,7 @@ var Forte = function ForteClass(defaults) {
         if (!opts.body.location_id) opts.body.location_id = self.location_id;
 
         debug('request', opts);
-        request(opts, function onAfterRequest(err, res, body) {
+        request(opts, function onAfterForteRequest(err, res, body) {
             debug('response', res ? res.statusCode : res, err || body);
             if (err || res.statusCode < 200 || res.statusCode > 299) {
                 return callback(err || body || "Error: status=" + res.statusCode);
@@ -52,7 +59,17 @@ var Forte = function ForteClass(defaults) {
         find: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/locations/' + (params.location_id || self.location_id) +
-                '/customers/' + (params.customer_token || '');
+                '/customers/';
+            self._request({
+                uri: uri,
+                method: 'GET',
+                body: params
+            }, callback);
+        },
+        findById: function (params, callback) {
+            var uri = '/accounts/' + (params.account_id || self.account_id) +
+                '/locations/' + (params.location_id || self.location_id) +
+                '/customers/' + params.customer_token;
             self._request({
                 uri: uri,
                 method: 'GET',
@@ -149,7 +166,7 @@ var Forte = function ForteClass(defaults) {
         findByCustomer: function (params, callback) {
             var uri = '/accounts/' + (params.account_id || self.account_id) +
                 '/locations/' + (params.location_id || self.location_id) +
-                '/customers/' + self.customer_token +
+                '/customers/' + params.customer_token +
                 '/transactions';
             self._request({
                 uri: uri,
