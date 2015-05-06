@@ -1,4 +1,4 @@
-# pre-release - pre-alpha - untested
+**This library is alpha status. You have been warned!**
 ---
 # Forte community library for Node.js
 
